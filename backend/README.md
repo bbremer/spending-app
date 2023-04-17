@@ -1,4 +1,7 @@
 # spending-app backend
 
-1. Do the [Plaid Quickstart](https://plaid.com/docs/quickstart/).
-2. Copy your Plaid dashboard in to `secrets.csv` in this format: `client_id,<client_id>\ndevelopment_secret,<Development secret>\nsandbox_secret,<Sandbox secret>`.
+1. [Sign up with Plaid](https://dashboard.plaid.com/signup)
+2. `git clone https://github.com/plaid/quickstart.git`
+3. `cp quickstart/.env.example quickstart/go/* .`
+4. `rm -rf quickstart`
+5. `cp .env.example .env` and fill out `.env` with your client\_id and development secret from your [Plaid dashboard](https://dashboard.plaid.com/team/keys)
