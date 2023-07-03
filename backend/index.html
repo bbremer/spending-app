@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<button id="link-button">Link Account</button>
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+<script type="text/javascript">
+  (async function () {
+    var handler = Plaid.create({
+      // Create a new link_token to initialize Link
+      // token: (await $.post("/api/create_link_token")).link_token,
+      token: (
+        await fetch("/api/create_link_token", {
+          method: "POST",
+        }).then((response) => response.json().then((result) => result))
+      ).link_token,
+      // receivedRedirectUri: window.location.href,  // omit b/c no oauth?
+      onSuccess: function (public_token, metadata) {
+        // Send the public_token to your app server.
+        // The metadata object contains info about the institution the
+        // user selected and the account ID or IDs, if the
+        // Account Select view is enabled.
+        console.log(public_token);
+        console.log(typeof public_token);
+        fetch("/api/set_access_token", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ public_token: public_token }),
+        }).then((response) => {
+          console.log(response);
+          response.json().then((result) => {
+            console.log(result);
+          });
+        });
+      },
+    });
+
+    document.querySelector("#link-button").onclick = (e) => {
+      console.log("above open");
+      handler.open();
+      console.log("under open");
+    };
+  })();
+</script>

@@ -97,6 +97,11 @@ func main() {
 	// 3. Re-initialize with the link token (from step 1) and the full received redirect URI
 	// from step 2.
 
+	r.LoadHTMLGlob("*.html")
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
+
 	r.POST("/api/set_access_token", getAccessToken)
 	r.POST("/api/create_link_token_for_payment", createLinkTokenForPayment)
 	r.GET("/api/auth", auth)
@@ -143,8 +148,15 @@ func renderError(c *gin.Context, originalErr error) {
 	c.JSON(http.StatusInternalServerError, gin.H{"error": originalErr.Error()})
 }
 
+type PublicTokenBody struct {
+	PublicToken string `json:"public_token"`
+}
+
 func getAccessToken(c *gin.Context) {
-	publicToken := c.PostForm("public_token")
+	var body PublicTokenBody
+	c.BindJSON(&body)
+	publicToken := body.PublicToken
+
 	ctx := context.Background()
 
 	// exchange the public_token for an access_token
